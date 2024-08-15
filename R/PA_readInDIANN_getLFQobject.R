@@ -81,6 +81,7 @@ dev.off()
 
 
 # add info on protein level about genotype and growingCondition
+
 unique(transformed$data$Name)
 transformed$data$Name <- gsub(x = transformed$data$Name, pattern = "AI2_10", replacement = "AI2ten")
 transformed$data$Name <- gsub(x = transformed$data$Name, pattern = "AI2_1", replacement = "AI2one")
