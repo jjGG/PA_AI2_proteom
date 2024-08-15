@@ -5,6 +5,9 @@
 #
 #
 
+# set working directory to source file location
+# setwd("~/GitHub/PA_AI2_proteom/R")
+
 # here we develop an Rscript to analyze LFQ-DIA data analyzed w/ DIANN and using
 # prolfqua and proflquapp
 
@@ -17,8 +20,8 @@ library(prolfquapp)
 library(stringr)
 
 # globals
-fgczproject <- "p35269"
-approach <- "firstAnalysis_SA6850"
+fgczproject <- "o35868"
+approach <- "PA_AI2"
 
 # go old-school without prolfquapp reporting but w/ two factors for the modelling!
 
@@ -27,13 +30,18 @@ x <- get_DIANN_files(path = "../data/")
 
 # parse and QC-check dataset
 # here we may add later more factors parsed from Grouping.Var or do it directly on the lfqobject$data
-myannotation <- file.path("../data/SA6850/dataset.csv") |>
+myannotation <- file.path("../data/dataset.csv") |>
   readr::read_csv() |> prolfquapp::read_annotation(QC = TRUE)
+myannotation
 
 # in this step we filter for DIANN qvalue 0.01 and also directly label decyos and contaminants!
-dir.create("C35658WU312988") # necessairy as expected by proflquapp
-#file.create("prolfqua.log") # necessairy as expected by proflquapp
+# read in minimal yaml tot find path
+#yml <- yaml::read_yaml("../data/minimal.yaml")
+#dir.create(yml$path) # necessairy as expected by proflquapp
+
 xd <- preprocess_DIANN(quant_data = x$data, fasta_file = x$fasta, annotation = myannotation)
+str(xd$protein_annotation)
+
 
 # roll up to proteins -> T3PQ
 myMethod <- "topN" # by default topN is 3
@@ -42,6 +50,8 @@ lfqdata <- prolfquapp::aggregate_data(xd$lfqdata, agg_method = myMethod)
 logger::log_info("END OF PROTEIN AGGREGATION")
 
 lfqdata$data
+# maybe here join  in w/ xd$protein_annotation
+
 
 # transform and normalize (log2nrobscale)
 # method = c("robscale", "vsn", "none", "log2")
@@ -71,7 +81,9 @@ dev.off()
 
 
 # add info on protein level about genotype and growingCondition
-#gsub(x = transformed$data$Name, )
+unique(transformed$data$Name)
+transformed$data$Name <- gsub(x = transformed$data$Name, pattern = "AI2_10", replacement = "AI2ten")
+transformed$data$Name <- gsub(x = transformed$data$Name, pattern = "AI2_1", replacement = "AI2one")
 table(unlist(lapply(str_split(string = transformed$data$Name, pattern = "_"),FUN = "[",1)))
 transformed$data$Genotype_ <- unlist(lapply(str_split(string = transformed$data$Name, pattern = "_"),FUN = "[",1))
 table(unlist(lapply(str_split(string = transformed$data$Name, pattern = "_"),FUN = "[",2)))
