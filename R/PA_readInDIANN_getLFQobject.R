@@ -85,10 +85,8 @@ dev.off()
 unique(transformed$data$Name)
 transformed$data$Name <- gsub(x = transformed$data$Name, pattern = "AI2_10", replacement = "AI2ten")
 transformed$data$Name <- gsub(x = transformed$data$Name, pattern = "AI2_1", replacement = "AI2one")
-table(unlist(lapply(str_split(string = transformed$data$Name, pattern = "_"),FUN = "[",1)))
-transformed$data$Genotype_ <- unlist(lapply(str_split(string = transformed$data$Name, pattern = "_"),FUN = "[",1))
-table(unlist(lapply(str_split(string = transformed$data$Name, pattern = "_"),FUN = "[",2)))
-transformed$data$GrowingCondition_ <- unlist(lapply(str_split(string = transformed$data$Name, pattern = "_"),FUN = "[",2))
+table(unlist(lapply(str_split(string = unique(transformed$data$Name), pattern = "_"),FUN = "[",1)))
+transformed$data$Condition <- unlist(lapply(str_split(string = transformed$data$Name, pattern = "_"),FUN = "[",1))
 
 
 # get factors and response correct -> better start from scratch again! completely!
@@ -109,9 +107,8 @@ table$hierarchy[["Protein_ID"]] = c("protein_Id")
 
 # define factors that are important
 table$fileName = "Name"
-table$factors[["Genotype"]] <- "Genotype_"
-table$factors[["GrowingCondition"]] <- "GrowingCondition_"
-table$factorDepth <- 2 # nur 2 faktoren und nicht run_id !
+table$factors[["Condition"]] <- "Condition"
+table$factorDepth <- 1 # nur 2 faktoren und nicht run_id !
 
 # create configuration prolfqua - v1.5.5 necessairy
 config <- prolfqua::AnalysisConfiguration$new(table)
@@ -124,8 +121,6 @@ lfqdata <- LFQData$new(data2, config)
 lfqdata$to_wide()
 lfqdata$factors()
 lfqdata$config$table$id_required()
-
-table(lfqdata$data$Genotype, lfqdata$data$GrowingCondition)
 
 # get transformer PlotterAndSummariser Objects
 pl <- lfqdata$get_Plotter()
