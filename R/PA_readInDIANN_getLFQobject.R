@@ -141,8 +141,8 @@ lfqSum$plot_missingness_per_group()
 lfqSum$plot_hierarchy_counts_sample()
 lfqSum$plot_missingness_per_group_cumsum()
 pl$missigness_histogram()
-pl$NA_heatmap()
 plot.new()
+pl$NA_heatmap()
 
 # stats
 stats$violin()
