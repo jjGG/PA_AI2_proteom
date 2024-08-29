@@ -19,7 +19,7 @@ fgczproject <- "p35269"
 approach <- "firstAnalysis_SA6850"
 
 
-load("p35269_firstAnalysis_SA6850_lfqDataObject.RData")
+#load("p35269_firstAnalysis_SA6850_lfqDataObject.RData")
 transformedData <- lfqdata
 
 # what is the name of the working intensity
@@ -34,7 +34,7 @@ annotable$sampleName
 transformedData$data
 
 # define model with interaction
-model <- strategy_lm("transformedIntensity ~ Genotype * GrowingCondition")
+model <- strategy_lm("transformedIntensity ~ Condition")
 
 # what subject goes into the model?
 # find out subject_Id name! transformedData$config$table$hkeysDepth()
@@ -48,9 +48,10 @@ mod$anova_histogram() # where do we get small pvalues?
 annotable
 
 # what contrasts are relevant?
-Contrast <- c("Growing_inPAvsTSB_GVancestor" = "`Genotype6850:GrowingConditionSN` - `Genotype6850:GrowingConditionTSB`",
-              "Evolution_B0403vsAncestor_allSamples" = "`GenotypeSB0403` - `Genotype6850`",
-              "Evolution_B1002vsAncestor_allSamples" = "`GenotypeSB1002` - `Genotype6850`")
+Contrast <- c("JE2_vs_LuxS" = "`ConditionJE2` - `ConditionluxS`",
+              "AI2one_vs_LuxS" = "`ConditionAI2one` - `ConditionluxS`",
+              "AI2ten_vs_LuxS" = "`ConditionAI2ten` - `ConditionluxS`",
+              "TSB_vs_LuxS" = "`ConditionTSB` - `ConditionluxS`")
 
 
 
@@ -99,10 +100,6 @@ dim(contrDF)
 (fN <- paste(fgczproject, "_", approach, "_ContrastObject", ".RData",sep = ""))
 save(x = mergedResults_prot, file = fN)
 
-
-#p3404_SAJE2_ResultsWithMeta <- left_join(contrDF, metaInfo_SAJE2)
-#write.table(x = p3404_SAJE2_ResultsWithMeta, file = "p3404_SAJE2_fullResults_ancestor_growingInPAvsTSB_WithMetaInfoRedundant_wImputes_2022-08-17.txt", sep = "\t", row.names = FALSE)
-#save(p3404_SAJE2_ResultsWithMeta, file = "p3404_SAJE2_results_ancestor_growingInPAvsTSB_wMetaInfo_wImputes_2022-08-17.RData")
 
 
 
